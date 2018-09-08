@@ -10,54 +10,76 @@ std = []
 median = []
 skewness = []
 
-rows = np.where(data[:,-1] == 7)
+general_std = [ column[1:].std() for column in data.T ]
 
-for column in data[rows].T:
-	if column[0] == 0: continue
-	#print(column)
-	means.append(column[1:].mean())
-	std.append(column[1:].std())
-	median.append(np.median(column[1:]))
+for filter in range(1, 8):
+	if filter == 4: 
+		means.append([np.nan]*10)
+		std.append([np.nan]*10)
+		median.append([np.nan]*10)
+		skewness.append([np.nan]*10)
+		continue
 
-	v = sum([ (xi - means[-1])**2 for xi in column[1:] ])/len(column[1:] - 1)
-	skewness_eq = sum([ (xi - means[-1])**3 for xi in column[1:] ])/(len(column[1:] - 1)*v**(3/2))
-	skewness.append(skewness_eq)
+	rows = np.where(data[:,-1] == filter)
+
+	means.append([])
+	std.append([])
+	median.append([])
+	skewness.append([])
+
+	for n, column in enumerate(data[rows].T):
+		if n == 0 : continue
+
+		means[-1].append(column.mean())
+		std[-1].append(column.std())
+		median[-1].append(np.median(column))
+
+		# try:
+		# 	v = sum([ (xi - means[-1])**2 for xi in column ])/(len(column) - 1)
+		# 	skewness_eq = sum([ (xi - means[-1])**3 for xi in column ])/((len(column) - 1)*v**(3/2))
+		# 	skewness[-1].append(skewness_eq)
+		# except ZeroDivisionError:
+		# 	skewness[-1] = np.nan
 
 
 
-show = data.T[2, 1:]
-sub = ['ID', 'RI', 'Na', 'Mg', 'Al', 'Si', 'k', 'Ca', 'Ba', 'Fe', 'type']
+sub = ['ID', 'RI', 'Na', 'Mg', 'Al', 'Si', 'k', 'Ca', 'Ba', 'Fe', 'type'][1:]
+
+
+fig, ax = plt.subplots(2, 2)
+plt.setp(ax, xticks=range(len(sub)), xticklabels=sub)
+bins = np.arange(len(sub)) - 0.5
+
+matrix = [[ e for e in range(len(means[0])) ]] * len(means)
+
+ax[0, 0].set_title('means')
+ax[0, 0].hist(matrix, weights=means, bins=bins)
+
+ax[0, 1].set_title('std')
+ax[0, 1].hist(matrix, weights=std, bins=bins)
+
+ax[1, 0].set_title('median')
+ax[1, 0].hist(matrix, weights=median, bins=bins)
+
+ax[1, 1].set_title('skewness')
+# ax[1, 1].hist(range(len(skewness[0])), weights=skewness)
+
+# #plot de dados bruto
+# for n, column in enumerate(data[rows].T):
+# #	if column[0] == 0: continue
+# 	show = column[1:]
+
+# 	if column[0] == 5: print(show)
+
+# 	axis = (n//5, n%5)
+
+# 	ax[axis].set_title(sub[n])
+# 	#ax[axis].hist(show)
+# 	ax[axis].stem(show)#, histtype='barstacked')
 
 # print(show)
 # plt.stem(show)#, label=sub, align='left', histtype='barstacked', rwidth=700000)
 # 	#range(len(show)), weights=
-# plt.show()
 
-fig, ax = plt.subplots(3, 5)
-for n, column in enumerate(data[rows].T):
-#	if column[0] == 0: continue
-	show = column[1:]
-
-	if column[0] == 5: print(show)
-
-	axis = (n//5, n%5)
-
-	ax[axis].set_title(sub[n])
-	#ax[axis].hist(show)
-	ax[axis].stem(show)#, histtype='barstacked')
-
-ax[2, 1].set_title('means')
-ax[2, 1].hist(range(len(means)), weights=means)
-
-ax[2, 2].set_title('std')
-ax[2, 2].hist(range(len(std)), weights=std)
-
-ax[2, 3].set_title('median')
-ax[2, 3].hist(range(len(median)), weights=median)
-
-ax[2, 4].set_title('skewness')
-ax[2, 4].hist(range(len(skewness)), weights=skewness)
 
 plt.show()
-
-'''Trabalhar com subplots'''
