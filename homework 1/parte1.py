@@ -12,7 +12,7 @@ skewness = []
 
 general_std = [ column[1:].std() for column in data.T ]
 
-for filter in range(1, 8):
+for filter in range(1, 1):
 	if filter == 4: 
 		means.append([np.nan]*10)
 		std.append([np.nan]*10)
@@ -34,12 +34,12 @@ for filter in range(1, 8):
 		std[-1].append(column.std())
 		median[-1].append(np.median(column))
 
-		# try:
-		# 	v = sum([ (xi - means[-1])**2 for xi in column ])/(len(column) - 1)
-		# 	skewness_eq = sum([ (xi - means[-1])**3 for xi in column ])/((len(column) - 1)*v**(3/2))
-		# 	skewness[-1].append(skewness_eq)
-		# except ZeroDivisionError:
-		# 	skewness[-1] = np.nan
+		try:
+			v = np.sum([ (xi - means[-1])**2 for xi in column ], dtype=float)/(len(column) - 1)
+			skewness_eq = np.sum([ (xi - means[-1])**3 for xi in column ], dtype=float)/((len(column) - 1)*v**(3/2))
+			skewness[-1].append(skewness_eq)
+		except ZeroDivisionError:
+			skewness[-1].append(np.nan)
 
 
 
@@ -62,7 +62,7 @@ ax[1, 0].set_title('median')
 ax[1, 0].hist(matrix, weights=median, bins=bins)
 
 ax[1, 1].set_title('skewness')
-# ax[1, 1].hist(range(len(skewness[0])), weights=skewness)
+ax[1, 1].hist(matrix, weights=skewness, bins=bins)
 
 # #plot de dados bruto
 # for n, column in enumerate(data[rows].T):
