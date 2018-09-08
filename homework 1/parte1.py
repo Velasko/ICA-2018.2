@@ -12,7 +12,7 @@ skewness = []
 
 general_std = [ column[1:].std() for column in data.T ]
 
-for filter in range(1, 1):
+for filter in range(1, 8):
 	if filter == 4: 
 		means.append([np.nan]*10)
 		std.append([np.nan]*10)
@@ -44,7 +44,7 @@ for filter in range(1, 1):
 
 
 sub = ['ID', 'RI', 'Na', 'Mg', 'Al', 'Si', 'k', 'Ca', 'Ba', 'Fe', 'type'][1:]
-
+labels = ["Tipo {}".format(e+1) for e in range(7)]
 
 fig, ax = plt.subplots(2, 2)
 plt.setp(ax, xticks=range(len(sub)), xticklabels=sub)
@@ -64,22 +64,26 @@ ax[1, 0].hist(matrix, weights=median, bins=bins)
 ax[1, 1].set_title('skewness')
 ax[1, 1].hist(matrix, weights=skewness, bins=bins)
 
-# #plot de dados bruto
-# for n, column in enumerate(data[rows].T):
-# #	if column[0] == 0: continue
-# 	show = column[1:]
-
-# 	if column[0] == 5: print(show)
-
-# 	axis = (n//5, n%5)
-
-# 	ax[axis].set_title(sub[n])
-# 	#ax[axis].hist(show)
-# 	ax[axis].stem(show)#, histtype='barstacked')
-
-# print(show)
-# plt.stem(show)#, label=sub, align='left', histtype='barstacked', rwidth=700000)
-# 	#range(len(show)), weights=
-
-
+plt.legend(labels)
 plt.show()
+
+
+#plot de dados bruto
+fig, ax = plt.subplots(3, 5)
+for n, column in enumerate(data[rows].T):
+	if n == 0: continue
+	show = column
+
+	if column[0] == 5: print(show)
+
+	axis = (n//5, n%5)
+
+	ax[axis].set_title(sub[n-1])
+	#ax[axis].hist(show)
+	ax[axis].stem(show)#, histtype='barstacked')
+
+plt.stem(show)#, label=sub, align='left', histtype='barstacked', rwidth=700000)
+	#range(len(show)), weights=
+
+
+#plt.show()
