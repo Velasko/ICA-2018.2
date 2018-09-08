@@ -5,31 +5,59 @@ import getdata
 
 data = getdata.get_data('Dados\\glass.data')
 
+means = []
+std = []
+median = []
+skewness = []
 
-# for column in data.T:
-# 	if column[0] == 0:
-# 		continue
-# 	print(column[1:].mean())
+rows = np.where(data[:,-1] == 7)
 
-means = [ column[1:].mean() for column in data.T ]
-std = [ column[1:].std() for column in data.T ]
-median = [ np.median(column[1:]) for column in data.T ]
-skewness = [ 3*(means[x] - median[x])/std[x] for x, _ in enumerate(means) ]
+for column in data[rows].T:
+	if column[0] == 0: continue
+	#print(column)
+	means.append(column[1:].mean())
+	std.append(column[1:].std())
+	median.append(np.median(column[1:]))
+
+	v = sum([ (xi - means[-1])**2 for xi in column[1:] ])/len(column[1:] - 1)
+	skewness_eq = sum([ (xi - means[-1])**3 for xi in column[1:] ])/(len(column[1:] - 1)*v**(3/2))
+	skewness.append(skewness_eq)
 
 
-show = median
-sub = ['RI', 'Na', 'Mg', 'Al', 'Si', 'k', 'Ca', 'Ba', 'Fe']
 
-print(show)
-#plt.hist(range(len(show)), weights=show, label=sub, align='left', histtype='barstacked', rwidth=700000)
+show = data.T[2, 1:]
+sub = ['ID', 'RI', 'Na', 'Mg', 'Al', 'Si', 'k', 'Ca', 'Ba', 'Fe', 'type']
 
-#print(help(plt.hist))
+# print(show)
+# plt.stem(show)#, label=sub, align='left', histtype='barstacked', rwidth=700000)
+# 	#range(len(show)), weights=
+# plt.show()
 
-#plt.hist(np.ones((len(data), len(data[0]))), weights=data, label=sub)
+fig, ax = plt.subplots(3, 5)
+for n, column in enumerate(data[rows].T):
+#	if column[0] == 0: continue
+	show = column[1:]
 
-# for column in data.T:
-# 	show = column[1:]
-# 	plt.hist(range(len(show)), weights=show, label=sub, align='left', histtype='barstacked', rwidth=700000)
-# 	plt.show()
+	if column[0] == 5: print(show)
 
-#print(data[3])
+	axis = (n//5, n%5)
+
+	ax[axis].set_title(sub[n])
+	#ax[axis].hist(show)
+	ax[axis].stem(show)#, histtype='barstacked')
+
+ax[2, 1].set_title('means')
+ax[2, 1].hist(range(len(means)), weights=means)
+
+ax[2, 2].set_title('std')
+ax[2, 2].hist(range(len(std)), weights=std)
+
+ax[2, 3].set_title('median')
+ax[2, 3].hist(range(len(median)), weights=median)
+
+ax[2, 4].set_title('skewness')
+ax[2, 4].hist(range(len(skewness)), weights=skewness)
+
+plt.show()
+
+'''Trabalhar com subplots'''
