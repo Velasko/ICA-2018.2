@@ -2,7 +2,19 @@ import matplotlib.pyplot as plt
 import numpy as np
 from scipy import stats
 
-import getdata
+def get_data(filename):
+	with open(filename, 'r') as file:
+		f = file.readlines()
+
+	x = np.array( [e for e in range(11) ] )#[['Id', 'RI', 'Na', 'Mg', 'Al', 'Si', 'k', 'Ca', 'Ba', 'Fe', 'type']])
+	for line in f:
+		l = line.split(",")
+
+		new_line = [ float(data) for data in l ]
+		x = np.vstack([x, new_line])
+
+	return x
+
 
 data = getdata.get_data('Dados\\glass.data')
 
