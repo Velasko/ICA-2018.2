@@ -1,6 +1,5 @@
 import matplotlib.pyplot as plt
 import numpy as np
-from scipy import stats
 
 def get_data(filename):
 	with open(filename, 'r') as file:
