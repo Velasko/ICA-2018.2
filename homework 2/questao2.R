@@ -28,4 +28,4 @@ ridgeValores2 <- data.frame(obs= solTestY,pred = ridgePred2)
 defaultSummary(ridgeValores2)
 
 plot(ridgeRegFit$results$lambda, ridgeRegFit$results$RMSE
-     , xlab="Penalty", ylab="RMSE (C-V")
+     , xlab="Penalty", ylab="RMSE (C-V") 
